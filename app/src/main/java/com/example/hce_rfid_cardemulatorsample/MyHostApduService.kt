@@ -13,29 +13,46 @@ class MyHostApduService : HostApduService() {
     // reader sends an APDU command that is filtered by our manifest filter.
     override fun processCommandApdu(commandApdu: ByteArray, extras: Bundle?): ByteArray {
         Log.d("layon.f", "MyHostApduService processCommandApdu(commandApdu = ${Utils.toHex(commandApdu)}, extras = $extras)")
-        var msg : String
+        var msg : String = ""
 
         //LiveDataManager.updateMessage("HostApduService processCommandApdu() start...")
-        msg = "${n++} - HostApduService processCommandApdu(commandApdu = ${Utils.toHex(commandApdu)}, extras = $extras) start...\n"
+        //msg = "${n++} - HostApduService processCommandApdu(commandApdu = ${Utils.toHex(commandApdu)}, extras = $extras) start...\n"
 
         var response : ByteArray
 
         if (commandApdu == null) {
-            msg += "\"${n++} - HostApduService processCommandApdu() commandApdu == null\n"
+            //msg += "\"${n++} - HostApduService processCommandApdu() commandApdu == null\n"
             response = Utils.hexStringToByteArray(STATUS_FAILED)
         }
 
-        val hexCommandApdu = Utils.toHex(commandApdu)
+        //val hexCommandApdu = Utils.toHex(commandApdu)
 
-        if (hexCommandApdu.substring(10, 24) == AID)  {
-            response = Utils.APDURESPONSE.toByteArray()
+        //if (hexCommandApdu.substring(10, 24) == AID)  {
+        //    //response = Utils.APDURESPONSE.toByteArray()
+        //    response = Utils.LAST_KEY.toByteArray()
+        //} else {
+        //    response = Utils.hexStringToByteArray(STATUS_FAILED)
+        //}
+
+        val apduString = String(commandApdu)
+
+        if  (apduString.contains("key=")) {
+            Utils.LAST_KEY = apduString.substring(4, 11)
+            val hash = Utils.djb2(Utils.LAST_KEY)
+            response = hash.toByteArray()
+        } else if (apduString.contains("success")) {
+            response = Utils.hexStringToByteArray(STATUS_SUCCESS)
+            msg += "success"
         } else {
             response = Utils.hexStringToByteArray(STATUS_FAILED)
+            msg += "failure"
         }
 
-        msg += "${n++} - HostApduService processCommandApdu() return : ${String(response)}\n"
 
-        msg += "${n++} - HostApduService processCommandApdu() ending...\n"
+
+        //msg += "${n++} - HostApduService processCommandApdu() return : ${String(response)}\n"
+
+        //msg += "${n++} - HostApduService processCommandApdu() ending...\n"
 
 
         LiveDataManager.updateMessage(msg)

@@ -36,16 +36,6 @@
 
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="50dp"
-            android:gravity="center|bottom"
-            android:text="HCE Host-Card-Emulator"
-            android:textColor="@color/black"
-            android:textSize="18sp"
-            android:textStyle="bold" />
-
-        <TextView
             android:id="@+id/emulating"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -56,6 +46,7 @@
             android:textStyle="bold|italic" />
 
         <ImageView
+            android:id="@+id/emulating_img"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_gravity="center_horizontal|center_vertical"
